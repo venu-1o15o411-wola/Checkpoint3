@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c958ee41845b26641b47a56dfdfcd9cb, type: 3}
+  m_Name: Riku
+  m_EditorClassIdentifier: 
+  id: 3
+  displayName: Riku
+  description: "Firme, leal y fuerte. Es el protector del grupo, siempre dispuesto
+    a enfrentarse a cualquier obst\xE1culo. Aunque su fuerza es impresionante, su
+    coraz\xF3n es a\xFAn m\xE1s grande. Puede ser algo testarudo, pero su determinaci\xF3n
+    lo hace invaluable."
+  sprite: {fileID: 21300000, guid: b712d2ce531172d468c5589bcc64dab5, type: 3}
+  prefab: {fileID: 6522912178232334416, guid: 57e84d1a2e6447444ab65e6e28e4afb7, type: 3}
+  element: 0
+  lifeMax: 200
+  manaMax: 70
+  manaRegenRate: 0.01
+  abilitySet: {fileID: 11400000, guid: 5345765a553aaa94d8757feab1ea9284, type: 2}

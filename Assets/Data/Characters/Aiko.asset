@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c958ee41845b26641b47a56dfdfcd9cb, type: 3}
+  m_Name: Aiko
+  m_EditorClassIdentifier: 
+  id: 2
+  displayName: Aiko
+  description: "Visionaria, disciplinada y valiente. Tiene un gran sentido del honor
+    y la justicia, siempre mirando m\xE1s all\xE1 para guiar al grupo hacia el mejor
+    camino. A veces puede ser demasiado exigente, pero su compromiso inspira respeto."
+  sprite: {fileID: 21300000, guid: 163c51130f7c74a4eabb6b3780918cf9, type: 3}
+  prefab: {fileID: 631694419323562647, guid: c46849b0aa00566498d3f28881208e98, type: 3}
+  element: 3
+  lifeMax: 70
+  manaMax: 200
+  manaRegenRate: 0.03
+  abilitySet: {fileID: 11400000, guid: b3fcd92f2caaa6645b61f701be2a0f71, type: 2}

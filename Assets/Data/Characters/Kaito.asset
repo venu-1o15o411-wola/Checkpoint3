@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c958ee41845b26641b47a56dfdfcd9cb, type: 3}
+  m_Name: Kaito
+  m_EditorClassIdentifier: 
+  id: 0
+  displayName: Kaito
+  description: "\xC1gil, curioso y carism\xE1tico. Siempre encuentra soluciones creativas
+    a los problemas y le encanta liderar al grupo con entusiasmo. Tiene un gran sentido
+    del humor, aunque a veces se lanza a la acci\xF3n sin pensar demasiado."
+  sprite: {fileID: 21300000, guid: 95b68a4abe7150545a229d231d0c3740, type: 3}
+  prefab: {fileID: 2979746221058658312, guid: cd3fe90be3a037749b1adb9feefef8c2, type: 3}
+  element: 0
+  lifeMax: 150
+  manaMax: 50
+  manaRegenRate: 0.04
+  abilitySet: {fileID: 11400000, guid: d71a4d2dc4613924dbe66ec8f6624b1c, type: 2}

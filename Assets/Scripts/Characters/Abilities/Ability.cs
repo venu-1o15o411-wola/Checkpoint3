@@ -1,89 +1,106 @@
+/*Clase: Ability
+*Descripción: Clase abstracta que representa una habilidad genérica dentro del juego.
+* Define propiedades comunes como nombre, descripción, enfriamiento, tipo de recurso y costo.
+* Además, maneja el estado de enfriamiento (cooldown) y provee validaciones para su uso.
+*Atributos:
+*   - Name: nombre de la habilidad.
+*   - Description: descripción de la habilidad.
+*   - Cd: tiempo de enfriamiento de la habilidad en segundos.
+*   - ResourceType: tipo de recurso requerido para castear la habilidad (ej. Mana, Vida).
+*   - CostValue: costo en recursos necesario para usar la habilidad.
+*   - OnCd: indica si la habilidad está actualmente en enfriamiento.
+*/
 public abstract class Ability
 {
-    // --- Datos base ---
-    public string Name { get; }
-    public string Description { get; }
-    public float Cooldown { get; }              // en segundos
-    public ResourceType ResourceType { get; }   // Vida o Mana
-    public CostAmountType CostAmountType { get; }
-    public float CostValue { get; }             // si PERCENT_MAX, usar 0.02 = 2%
+    protected string Name { get; }
+    protected string Description { get; }
+    protected float Cd { get; }
+    protected ResourceType ResourceType { get; }
+    protected float CostValue { get; }
+    protected bool OnCd { get; set; } = false;
 
-    // --- Estado de runtime ---
-    private float _lastCastAt = float.NegativeInfinity;
-
+    /*Constructor: Ability
+    *Descripción: Inicializa una habilidad con nombre, descripción, enfriamiento,
+    * tipo de recurso y costo.
+    *Parámetros:
+    *   - name: nombre de la habilidad.
+    *   - description: descripción de la habilidad.
+    *   - cd: tiempo de enfriamiento en segundos.
+    *   - resourceType: tipo de recurso necesario (Mana o Vida).
+    *   - costValue: valor del recurso consumido al castear.
+    */
     protected Ability(
         string name,
         string description,
-        float cooldown,
+        float cd,
         ResourceType resourceType,
-        CostAmountType costAmountType,
-        float costValue)
+        float costValue
+    )
     {
         Name = name;
         Description = description;
-        Cooldown = Math.Max(0f, cooldown);
+        Cd = cd;
         ResourceType = resourceType;
-        CostAmountType = costAmountType;
-        CostValue = Math.Max(0f, costValue);
+        CostValue = costValue;
     }
 
-    // ---------- API pública ----------
-    public bool IsOnCooldown(float now) => (now - _lastCastAt) < Cooldown;
+    /*Método: Cast
+    *Descripción: Método abstracto que define cómo se ejecuta la habilidad.
+    *Debe ser implementado por cada clase derivada.
+    *Parámetros:
+    *   - caster: entidad que lanza la habilidad.
+    *   - target: objetivo de la habilidad.
+    */
+    public abstract void Cast(PlayableCarrier caster, Carrier target);
 
-    public float RemainingCooldown(float now)
+    /*Método: startCooldown
+    *Descripción: Inicia el enfriamiento de la habilidad y ejecuta una corrutina
+    * para esperar el tiempo definido en Cd antes de habilitarla nuevamente.
+    */
+    public void startCooldown()
     {
-        float remaining = Cooldown - (now - _lastCastAt);
-        return remaining > 0f ? remaining : 0f;
-    }
+        OnCd = true;
 
-    public virtual bool CanCast(PlayableCarrier owner, float now)
-    {
-        if (owner == null) return false;
-        if (IsOnCooldown(now)) return false;
-
-        float cost = ComputeCost(owner);
-        return HasEnoughResource(owner, cost);
-    }
-
-    /// Plantilla: valida, cobra costo, aplica efecto y arranca cooldown.
-    public void Cast(PlayableCarrier owner, Carrier target, float now)
-    {
-        if (!CanCast(owner, now))
-            throw new InvalidOperationException($"Ability '{Name}' cannot be cast now.");
-
-        float cost = ComputeCost(owner);
-        ChargeCost(owner, cost);
-        ApplyEffect(owner, target);
-        StartCooldown(now);
-    }
-
-    // ---------- Gancho de efecto (cada subclase implementa) ----------
-    protected abstract void ApplyEffect(PlayableCarrier owner, Carrier target);
-
-    // ---------- Costo ----------
-    protected virtual float ComputeCost(PlayableCarrier owner)
-    {
-        if (CostAmountType == CostAmountType.Flat) return CostValue;
-
-        // Percent del Max del recurso correspondiente
-        float max = ResourceType == ResourceType.Life ? owner.Vida.Max : owner.Mana.Max;
-        return max * CostValue;
-    }
-
-    protected virtual bool HasEnoughResource(PlayableCarrier owner, float cost)
-    {
-        if (ResourceType == ResourceType.Life)
-            return owner.Vida.Current >= cost;
-        return owner.Mana.Current >= cost;
-    }
-
-    protected virtual void ChargeCost(PlayableCarrier owner, float cost)
-    {
-        if (ResourceType == ResourceType.Life)
-            owner.Vida.Spend(cost);
+        UnityEngine.MonoBehaviour runner =
+            UnityEngine.Object.FindObjectOfType<UnityEngine.MonoBehaviour>();
+        if (runner != null)
+        {
+            runner.StartCoroutine(CooldownCoroutine());
+        }
         else
-            owner.Mana.Spend(cost);
+        {
+            UnityEngine.Debug.LogWarning("No MonoBehaviour found to run the cooldown coroutine.");
+        }
     }
 
-    protected virtual void StartCooldown(float now) => _lastCastAt = now;
+    /*Método privado: CooldownCoroutine
+    *Descripción: Corrutina que espera el tiempo de enfriamiento (Cd)
+    * y después restablece la disponibilidad de la habilidad.
+    */
+    private System.Collections.IEnumerator CooldownCoroutine()
+    {
+        yield return new UnityEngine.WaitForSeconds(Cd);
+        OnCd = false;
+    }
+
+    /*Método: canCast
+    *Descripción: Verifica si la habilidad puede lanzarse. Revisa que no esté en enfriamiento
+    * y que el lanzador tenga suficientes recursos (Mana o Vida).
+    *Parámetros:
+    *   - caster: entidad que intenta lanzar la habilidad.
+    *Retorna: true si la habilidad puede lanzarse, false en caso contrario.
+    */
+    public bool canCast(PlayableCarrier caster)
+    {
+        if (OnCd == false)
+        {
+            if (ResourceType == ResourceType.Mana)
+                return caster.Mana.Current >= CostValue;
+            else if (ResourceType == ResourceType.Health)
+                return caster.Life.Current > CostValue;
+            return true;
+        }
+        else
+            return false;
+    }
 }

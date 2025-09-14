@@ -1,12 +1,12 @@
 /*Clase: Carrier
 *Descripción: Clase abstracta que representa un portador o entidad viviente en el juego.
-* Contiene atributos de identificación (id, nombre, descripción) y un recurso de vida (Vida).
+* Contiene atributos de identificación (id, nombre, descripción) y un recurso de life (Life).
 * Ofrece métodos para consultar su información y manipular su salud mediante daño o curación.
 *Atributos:
 *   - id: identificador único del portador.
 *   - name: nombre del portador.
 *   - description: descripción del portador.
-*   - Vida: recurso de vida asociado al portador.
+*   - Life: recurso de life asociado al portador.
 */
 public abstract class Carrier
 {
@@ -14,22 +14,22 @@ public abstract class Carrier
     private readonly string name;
     private readonly string description;
 
-    public Life Vida { get; }
+    public Life Life { get; }
 
     /*Constructor: Carrier
-    *Descripción: Inicializa un portador con id, nombre, descripción y una instancia de vida.
+    *Descripción: Inicializa un portador con id, nombre, descripción y una instancia de life.
     *Parámetros:
     *   - id: identificador único del portador.
     *   - name: nombre del portador.
     *   - description: descripción del portador.
-    *   - vida: recurso de vida asociado.
+    *   - life: recurso de life asociado.
     */
-    protected Carrier(int id, string name, string description, Life vida)
+    protected Carrier(int id, string name, string description, Life life)
     {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.Vida = vida;
+        this.Life = life;
     }
 
     /*Método: GetId
@@ -51,13 +51,13 @@ public abstract class Carrier
     public string GetDescription() => description;
 
     /*Método: IsDead
-    *Descripción: Verifica si el portador está muerto (vida vacía).
-    *Retorna: true si Vida está en 0, false en caso contrario.
+    *Descripción: Verifica si el portador está muerto (life vacía).
+    *Retorna: true si Life está en 0, false en caso contrario.
     */
-    public bool IsDead() => Vida.IsEmpty();
+    public bool IsDead() => Life.IsEmpty();
 
     /*Método: ApplyDamage
-    *Descripción: Aplica daño al portador reduciendo su vida.
+    *Descripción: Aplica daño al portador reduciendo su life.
     *Parámetros:
     *   - amount: cantidad de daño a aplicar.
     */
@@ -65,18 +65,18 @@ public abstract class Carrier
     {
         if (amount <= 0f)
             return;
-        Vida.Spend(amount);
+        Life.Spend(amount);
     }
 
     /*Método: Heal
-    *Descripción: Restaura la vida del portador en la cantidad indicada.
+    *Descripción: Restaura la life del portador en la cantidad indicada.
     *Parámetros:
-    *   - amount: cantidad de vida a recuperar.
+    *   - amount: cantidad de life a recuperar.
     */
     public void Heal(float amount)
     {
         if (amount <= 0f)
             return;
-        Vida.Recover(amount);
+        Life.Recover(amount);
     }
 }

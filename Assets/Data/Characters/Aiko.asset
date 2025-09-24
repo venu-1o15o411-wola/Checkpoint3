@@ -18,9 +18,11 @@ MonoBehaviour:
     y la justicia, siempre mirando m\xE1s all\xE1 para guiar al grupo hacia el mejor
     camino. A veces puede ser demasiado exigente, pero su compromiso inspira respeto."
   sprite: {fileID: 21300000, guid: 163c51130f7c74a4eabb6b3780918cf9, type: 3}
-  prefab: {fileID: 631694419323562647, guid: c46849b0aa00566498d3f28881208e98, type: 3}
+  LifeBarSprite: {fileID: 21300000, guid: 81a9299a1f323f2499474c4899d280a1, type: 3}
+  ManaBarSprite: {fileID: 21300000, guid: 81a9299a1f323f2499474c4899d280a1, type: 3}
+  prefab: {fileID: 4328418522385047615, guid: c46849b0aa00566498d3f28881208e98, type: 3}
   element: 3
-  lifeMax: 70
-  manaMax: 200
+  lifeMax: 950
+  manaMax: 550
   manaRegenRate: 0.03
   abilitySet: {fileID: 11400000, guid: b3fcd92f2caaa6645b61f701be2a0f71, type: 2}

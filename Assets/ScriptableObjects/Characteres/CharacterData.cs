@@ -11,6 +11,7 @@ public class CharacterData : ScriptableObject
     [TextArea] public string description;
     public Sprite sprite;
     public Sprite LifeBarSprite;
+    public Sprite ManaBarSprite;
     public GameObject prefab;
     public Element element;
 

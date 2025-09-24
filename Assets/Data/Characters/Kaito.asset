@@ -18,9 +18,11 @@ MonoBehaviour:
     a los problemas y le encanta liderar al grupo con entusiasmo. Tiene un gran sentido
     del humor, aunque a veces se lanza a la acci\xF3n sin pensar demasiado."
   sprite: {fileID: 21300000, guid: 95b68a4abe7150545a229d231d0c3740, type: 3}
-  prefab: {fileID: 2979746221058658312, guid: cd3fe90be3a037749b1adb9feefef8c2, type: 3}
+  LifeBarSprite: {fileID: 21300000, guid: 819762a257368dc419b55e71999f7a5d, type: 3}
+  ManaBarSprite: {fileID: 21300000, guid: 819762a257368dc419b55e71999f7a5d, type: 3}
+  prefab: {fileID: 2239707126511097008, guid: cd3fe90be3a037749b1adb9feefef8c2, type: 3}
   element: 0
-  lifeMax: 150
-  manaMax: 50
-  manaRegenRate: 0.04
+  lifeMax: 850
+  manaMax: 600
+  manaRegenRate: 0.035
   abilitySet: {fileID: 11400000, guid: d71a4d2dc4613924dbe66ec8f6624b1c, type: 2}

@@ -1,0 +1,242 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+/*Clase: PlayerAbilities
+*Descripción: Controla las habilidades del jugador y su interacción con los recursos de vida y maná.
+* Gestiona ataques, curación, habilidad definitiva (ulti), regeneración de maná y actualización de la UI.
+*Atributos:
+*   - characterData: datos del personaje (parámetros base y set de habilidades).
+*   - currentLife / maxLife: vida actual y máxima del jugador.
+*   - currentMana / maxMana: maná actual y máximo del jugador.
+*   - canUseAttack / canUseHeal / canUseUlti: flags para disponibilidad de habilidades.
+*   - enableManaRegen: indica si el maná se regenera automáticamente.
+*   - anim: referencia al Animator del jugador.
+*   - rb: referencia al Rigidbody del jugador.
+*   - shooter: referencia al componente PlayerShooter para disparar proyectiles.
+*/
+public class PlayerAbilities : MonoBehaviour
+{
+    [Header("Character characterData")]
+    public CharacterData characterData;
+
+    [Header("Values")]
+    public float currentLife;
+    public float currentMana;
+    public float maxLife;
+    public float maxMana;
+
+    private bool canUseAttack = true;
+    private bool canUseHeal = true;
+    private bool canUseUlti = true;
+
+    [Header("Regen")]
+    [SerializeField]
+    private bool enableManaRegen = true;
+
+    private Animator anim;
+    private Rigidbody rb;
+    private PlayerShooter shooter;
+
+    /*Método: Start
+    *Descripción: Inicializa valores de vida/maná y referencias a componentes.
+    * También envía los valores iniciales a la UI.
+    */
+    void Start()
+    {
+        maxLife = characterData.lifeMax;
+        maxMana = characterData.manaMax;
+        currentLife = maxLife;
+        currentMana = maxMana;
+
+        rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+        shooter = GetComponent<PlayerShooter>();
+
+        PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
+        PlayerUIManager.Instance?.UpdateMana(currentMana, maxMana);
+    }
+
+    /*Método: Update
+    *Descripción: Aplica regeneración de maná si está habilitada y hay capacidad restante.
+    */
+    void Update()
+    {
+        if (enableManaRegen && characterData.manaRegenRate > 0f && currentMana < maxMana)
+        {
+            SetMana(currentMana + characterData.manaRegenRate * Time.deltaTime);
+        }
+    }
+
+    /*Método: OnAttack
+    *Descripción: Intenta ejecutar la habilidad de ataque cuando la acción de entrada es realizada.
+    *Parámetros:
+    *   - context: contexto de la acción del Input System.
+    */
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed || !canUseAttack)
+            return;
+
+        var ability = characterData?.abilitySet?.attack;
+        if (ability == null)
+            return;
+
+        if (!TryPayCost(ability))
+        {
+            Debug.LogWarning("[PlayerAbilities] No alcanza recurso para ATTACK.");
+            return;
+        }
+        anim?.SetTrigger("Attack");
+        canUseAttack = false;
+        StartCooldown(1, ability.cooldown);
+        PlayerUIManager.Instance?.StartCoolDown(1, ability.cooldown);
+
+        if (shooter != null)
+        {
+            shooter.Fire(ability.damage);
+        }
+    }
+
+    /*Método: OnHeal
+    *Descripción: Intenta ejecutar la habilidad de curación cuando la acción de entrada es realizada.
+    *Parámetros:
+    *   - context: contexto de la acción del Input System.
+    */
+    public void OnHeal(InputAction.CallbackContext context)
+    {
+        if (!context.performed || !canUseHeal)
+            return;
+
+        var ability = characterData?.abilitySet?.heal;
+        if (ability == null)
+            return;
+
+        if (!TryPayCost(ability))
+        {
+            Debug.LogWarning("[PlayerAbilities] No alcanza recurso para HEAL.");
+            return;
+        }
+
+        anim?.SetTrigger("Heal");
+        canUseHeal = false;
+        StartCooldown(2, ability.cooldown);
+        PlayerUIManager.Instance?.StartCoolDown(2, ability.cooldown);
+
+        if (ability.isHeal && ability.damage > 0f)
+        {
+            SetLife(currentLife + ability.damage);
+        }
+    }
+
+    /*Método: OnUlti
+    *Descripción: Intenta ejecutar la habilidad definitiva (área) cuando la acción de entrada es realizada.
+    *Parámetros:
+    *   - context: contexto de la acción del Input System.
+    */
+    public void OnUlti(InputAction.CallbackContext context)
+    {
+        if (!context.performed || !canUseUlti)
+            return;
+
+        var ability = characterData?.abilitySet?.area;
+        if (ability == null)
+            return;
+
+        if (!TryPayCost(ability))
+        {
+            Debug.LogWarning("[PlayerAbilities] No alcanza recurso para ULTI.");
+            return;
+        }
+
+        anim?.SetTrigger("Ulti");
+        canUseUlti = false;
+        StartCooldown(3, ability.cooldown);
+        PlayerUIManager.Instance?.StartCoolDown(3, ability.cooldown);
+    }
+
+    /*Método: SetLife
+    *Descripción: Ajusta la vida actual dentro de los límites válidos y actualiza la UI.
+    *Parámetros:
+    *   - value: nuevo valor propuesto de vida.
+    */
+    private void SetLife(float value)
+    {
+        currentLife = Mathf.Clamp(value, 0f, maxLife);
+        PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
+    }
+
+    /*Método: SetMana
+    *Descripción: Ajusta el maná actual dentro de los límites válidos y actualiza la UI.
+    *Parámetros:
+    *   - value: nuevo valor propuesto de maná.
+    */
+    private void SetMana(float value)
+    {
+        currentMana = Mathf.Clamp(value, 0f, maxMana);
+        PlayerUIManager.Instance?.UpdateMana(currentMana, maxMana);
+    }
+
+    /*Método: TryPayCost
+    *Descripción: Intenta pagar el costo de la habilidad según su tipo de recurso.
+    *Parámetros:
+    *   - ability: habilidad cuyo costo se intenta pagar.
+    *Retorna: true si el costo se pudo pagar; false si el recurso es insuficiente.
+    */
+    private bool TryPayCost(AbilityData ability)
+    {
+        float cost = Mathf.Max(0f, ability.costValue);
+
+        switch (ability.resourceType)
+        {
+            case ResourceType.Mana:
+                if (currentMana < cost)
+                    return false;
+                SetMana(currentMana - cost);
+                return true;
+
+            case ResourceType.Health:
+                if (currentLife <= cost)
+                    return false;
+                SetLife(currentLife - cost);
+                return true;
+
+            default:
+                return true;
+        }
+    }
+
+    /*Método: StartCooldown
+    *Descripción: Inicia la corrutina de enfriamiento para un tipo de habilidad.
+    *Parámetros:
+    *   - type: 1 = ataque, 2 = curación, 3 = ulti.
+    *   - cd: duración del enfriamiento en segundos.
+    */
+    public void StartCooldown(int type, float cd)
+    {
+        StartCoroutine(CooldownRoutine(type, cd));
+    }
+
+    /*Método: CooldownRoutine
+    *Descripción: Espera el tiempo de enfriamiento y vuelve a habilitar la habilidad correspondiente.
+    *Parámetros:
+    *   - type: identificador del tipo de habilidad (1/2/3).
+    *   - cd: duración del enfriamiento en segundos.
+    */
+    private IEnumerator CooldownRoutine(int type, float cd)
+    {
+        yield return new WaitForSeconds(cd);
+        switch (type)
+        {
+            case 1:
+                canUseAttack = true;
+                break;
+            case 2:
+                canUseHeal = true;
+                break;
+            case 3:
+                canUseUlti = true;
+                break;
+        }
+    }
+}

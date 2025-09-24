@@ -19,9 +19,11 @@ MonoBehaviour:
     coraz\xF3n es a\xFAn m\xE1s grande. Puede ser algo testarudo, pero su determinaci\xF3n
     lo hace invaluable."
   sprite: {fileID: 21300000, guid: b712d2ce531172d468c5589bcc64dab5, type: 3}
-  prefab: {fileID: 6522912178232334416, guid: 57e84d1a2e6447444ab65e6e28e4afb7, type: 3}
+  LifeBarSprite: {fileID: 21300000, guid: ce569393b6ec65a40b69eaf312a57303, type: 3}
+  ManaBarSprite: {fileID: 21300000, guid: ce569393b6ec65a40b69eaf312a57303, type: 3}
+  prefab: {fileID: 5301111255890365565, guid: 57e84d1a2e6447444ab65e6e28e4afb7, type: 3}
   element: 0
-  lifeMax: 200
-  manaMax: 70
-  manaRegenRate: 0.01
+  lifeMax: 1500
+  manaMax: 400
+  manaRegenRate: 0.025
   abilitySet: {fileID: 11400000, guid: 5345765a553aaa94d8757feab1ea9284, type: 2}

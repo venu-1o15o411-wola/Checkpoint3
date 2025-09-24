@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f25582939702a4f9d409480e56cf38, type: 3}
+  m_Name: "G02_Nature\u2019sShelter"
+  m_EditorClassIdentifier: 
+  displayName: "Nature\u2019s Shelter"
+  icon: {fileID: 21300000, guid: 426d66f4b0aa8e6409d6324b0858f85c, type: 3}
+  description: "Calls upon the earth\u2019s energy to heal and protect."
+  cooldown: 8
+  resourceType: 1
+  costValue: 40
+  damage: 200
+  attack: 0
+  isHeal: 1
+  isArea: 0

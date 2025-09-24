@@ -18,9 +18,11 @@ MonoBehaviour:
     ofrece consejos prudentes al equipo. Su calma inspira a los dem\xE1s, aunque
     a veces puede parecer lento o indeciso."
   sprite: {fileID: 21300000, guid: f5811a6e0edf87f42ae27202822a92ca, type: 3}
-  prefab: {fileID: 6699352409203543741, guid: bde67ad8fa21b334a8466d43532fc246, type: 3}
+  LifeBarSprite: {fileID: 21300000, guid: f6dfafb855d4f094f99e762e6810ae98, type: 3}
+  ManaBarSprite: {fileID: 21300000, guid: f6dfafb855d4f094f99e762e6810ae98, type: 3}
+  prefab: {fileID: 4609134192821788540, guid: bde67ad8fa21b334a8466d43532fc246, type: 3}
   element: 1
-  lifeMax: 100
-  manaMax: 100
-  manaRegenRate: 0.03
+  lifeMax: 1200
+  manaMax: 500
+  manaRegenRate: 0.045
   abilitySet: {fileID: 11400000, guid: 54a656d5bc9d4ab4b8d706174c662129, type: 2}

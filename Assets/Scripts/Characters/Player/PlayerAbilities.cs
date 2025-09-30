@@ -13,9 +13,9 @@ using UnityEngine.InputSystem;
 *   - enableManaRegen: indica si el maná se regenera automáticamente.
 *   - anim: referencia al Animator del jugador.
 *   - rb: referencia al Rigidbody del jugador.
-*   - shooter: referencia al componente PlayerShooter para disparar proyectiles.
+*   - shooter: referencia al componente Shooter para disparar proyectiles.
 */
-public class PlayerAbilities : MonoBehaviour
+public class PlayerAbilities : MonoBehaviour, IDamageable
 {
     [Header("Character characterData")]
     public CharacterData characterData;
@@ -37,7 +37,7 @@ public class PlayerAbilities : MonoBehaviour
 
     private Animator anim;
     private Rigidbody rb;
-    private PlayerShooter shooter;
+    private Shooter shooter;
     [Header("Heal")]
     [SerializeField] private ParticleSystem healEffect;
     [Header("Ulti")]
@@ -52,7 +52,7 @@ public class PlayerAbilities : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
-        shooter = GetComponent<PlayerShooter>();
+        shooter = GetComponent<Shooter>();
 
         maxLife = characterData.lifeMax;
         maxMana = characterData.manaMax;
@@ -63,6 +63,8 @@ public class PlayerAbilities : MonoBehaviour
 
         PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
         PlayerUIManager.Instance?.UpdateMana(currentMana, maxMana);
+
+        Debug.Log("Target Tag: " + gameObject.tag);
     }
 
     /*Método: Update
@@ -239,5 +241,17 @@ public class PlayerAbilities : MonoBehaviour
                 canUseUlti = true;
                 break;
         }
+    }
+    public void ReceiveDamage(float amount)
+    {
+        if (amount <= 0f) return;
+        Debug.Log($"[DAMAGE LOG] TAG: {gameObject.tag} | VIDA ANTES: {currentLife} | DAÑO RECIBIDO: {amount}");
+
+        SetLife(currentLife - amount);
+        if (currentLife > 0f)
+        {
+            anim?.SetTrigger("GetHit");
+        }
+        Debug.Log($"[DAMAGE LOG] TAG: {gameObject.tag} | VIDA DESPUÉS: {currentLife}");
     }
 }

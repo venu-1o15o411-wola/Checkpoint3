@@ -61,7 +61,7 @@ public class CharacterSelectedManager : MonoBehaviour
             parent != null ? parent.transform : null
         );
         instance.name = "Player";
-        var shooter = instance.GetComponent<PlayerShooter>();
+        var shooter = instance.GetComponent<Shooter>();
         if (shooter != null)
         {
             var attack = selectedData.abilitySet?.attack;

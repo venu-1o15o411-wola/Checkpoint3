@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     private float lifeTimer;
     private float maxLife;
     private float damage;
-
+    public string ownerTag { get; set; }
     /*Método: Awake
     *Descripción: Inicializa el Rigidbody del proyectil y configura
     * la detección de colisiones y gravedad.
@@ -74,12 +74,25 @@ public class Projectile : MonoBehaviour
     *Parámetros:
     *   - other: información de la colisión detectada.
     */
-    void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other)
     {
-        // TODO: aplicar daño real: other.collider.GetComponent<Health>()?.TakeDamage(damage);
+        string targetTag = ownerTag == "Enemy" ? "Player" : "Enemy";
+        Debug.Log($"[PROJECTILE LOG] Proyectil con tag '{ownerTag}' colisionó con '{other.collider.tag}'");
+        var root = other.collider.attachedRigidbody
+            ? other.collider.attachedRigidbody.transform.root
+            : other.collider.transform.root;
+
+        if (root != null && root.CompareTag(targetTag))
+        {
+            var damageable = root.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.ReceiveDamage(damage);
+            }
+        }
+
         Despawn();
     }
-
     /*Método: Despawn
     *Descripción: Detiene el movimiento del proyectil y lo retorna al pool.
     */

@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: "Storm\u2019s Wrath"
   icon: {fileID: 21300000, guid: 430ff1415a0bca648918d142a555da19, type: 3}
+  projectilePrefab: {fileID: 0}
   description: Unleashes a devastating hurricane that sweeps through enemies
-  cooldown: 20
+  cooldown: 0
   resourceType: 0
   costValue: 150
   damage: 280

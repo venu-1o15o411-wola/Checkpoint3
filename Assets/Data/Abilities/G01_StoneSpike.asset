@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Stone Spike
   icon: {fileID: 21300000, guid: 3d323a543cf8bc0449bb62e2c0b980b2, type: 3}
-  projectilePrefab: {fileID: 7869640504740133115, guid: 149610011bf24b64095dc781bd2166e5, type: 3}
+  projectilePrefab: {fileID: 7324719003325937183, guid: 932e454196fe75749948e9fccabe3edd, type: 3}
   description: Propels a sharp rock projectile from the earth.
   cooldown: 4.5
   resourceType: 1

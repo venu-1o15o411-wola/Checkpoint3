@@ -25,6 +25,7 @@ public class PlayerAbilities : MonoBehaviour
     public float currentMana;
     public float maxLife;
     public float maxMana;
+    public float distanciaN = 5f;
 
     private bool canUseAttack = true;
     private bool canUseHeal = true;
@@ -37,6 +38,11 @@ public class PlayerAbilities : MonoBehaviour
     private Animator anim;
     private Rigidbody rb;
     private PlayerShooter shooter;
+    [Header("Heal")]
+    [SerializeField] private ParticleSystem healEffect;
+    [Header("Ulti")]
+    [SerializeField] private UltiMoveBetween ultiMoveBetween;
+    [SerializeField] private Transform muzzle;
 
     /*Método: Start
     *Descripción: Inicializa valores de vida/maná y referencias a componentes.
@@ -44,14 +50,16 @@ public class PlayerAbilities : MonoBehaviour
     */
     void Start()
     {
-        maxLife = characterData.lifeMax;
-        maxMana = characterData.manaMax;
-        currentLife = maxLife;
-        currentMana = maxMana;
-
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         shooter = GetComponent<PlayerShooter>();
+
+        maxLife = characterData.lifeMax;
+        maxMana = characterData.manaMax;
+        Debug.Log("Mana Max: " + characterData.manaMax);
+        currentLife = maxLife;
+        currentMana = maxMana;
+        muzzle = shooter.muzzle;
 
         PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
         PlayerUIManager.Instance?.UpdateMana(currentMana, maxMana);
@@ -107,25 +115,15 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (!context.performed || !canUseHeal)
             return;
-
         var ability = characterData?.abilitySet?.heal;
-        if (ability == null)
-            return;
-
-        if (!TryPayCost(ability))
-        {
-            Debug.LogWarning("[PlayerAbilities] No alcanza recurso para HEAL.");
-            return;
-        }
-
         anim?.SetTrigger("Heal");
         canUseHeal = false;
         StartCooldown(2, ability.cooldown);
         PlayerUIManager.Instance?.StartCoolDown(2, ability.cooldown);
-
         if (ability.isHeal && ability.damage > 0f)
         {
             SetLife(currentLife + ability.damage);
+            healEffect?.Play();
         }
     }
 
@@ -153,6 +151,9 @@ public class PlayerAbilities : MonoBehaviour
         canUseUlti = false;
         StartCooldown(3, ability.cooldown);
         PlayerUIManager.Instance?.StartCoolDown(3, ability.cooldown);
+        Vector3 basePos = muzzle.position + muzzle.forward * distanciaN; // tú ya controlas distanciaN
+        ultiMoveBetween.ActivateAtBasePosition(gameObject, basePos);
+
     }
 
     /*Método: SetLife
@@ -160,7 +161,7 @@ public class PlayerAbilities : MonoBehaviour
     *Parámetros:
     *   - value: nuevo valor propuesto de vida.
     */
-    private void SetLife(float value)
+    public void SetLife(float value)
     {
         currentLife = Mathf.Clamp(value, 0f, maxLife);
         PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
@@ -171,7 +172,7 @@ public class PlayerAbilities : MonoBehaviour
     *Parámetros:
     *   - value: nuevo valor propuesto de maná.
     */
-    private void SetMana(float value)
+    public void SetMana(float value)
     {
         currentMana = Mathf.Clamp(value, 0f, maxMana);
         PlayerUIManager.Instance?.UpdateMana(currentMana, maxMana);

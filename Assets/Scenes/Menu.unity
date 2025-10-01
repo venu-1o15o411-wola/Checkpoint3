@@ -993,7 +993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1173,9 +1173,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButton: {fileID: 438172280}
   exitButton: {fileID: 232116415}
-  musicClip: {fileID: 0}
-  hoverSfx: {fileID: 0}
-  clickSfx: {fileID: 0}
+  restartButton: {fileID: 0}
+  musicClip: {fileID: 8300000, guid: d3722f60ee34c824284a8cec188910fa, type: 3}
+  hoverSfx: {fileID: 8300000, guid: beeec9b2fa9eeb44fb561d60e4f1fb39, type: 3}
+  clickSfx: {fileID: 8300000, guid: 671a31ead871b1a428ed9848f1072c00, type: 3}
 --- !u!114 &1895135028
 MonoBehaviour:
   m_ObjectHideFlags: 0

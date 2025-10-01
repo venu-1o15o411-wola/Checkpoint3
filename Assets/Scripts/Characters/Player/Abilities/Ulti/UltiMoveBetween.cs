@@ -1,110 +1,148 @@
 using System.Collections;
 using UnityEngine;
 
+/*Clase: UltiMoveBetween
+*Descripción: Controla el comportamiento de una habilidad definitiva de área
+* que se mueve verticalmente entre dos posiciones, inflige daño en un área
+* al llegar al punto máximo y luego regresa a su posición inicial.
+*Atributos:
+*   - startYOffset: desplazamiento inicial en Y desde la posición base.
+*   - endYOffset: desplazamiento final en Y desde la posición base.
+*   - travelDuration: tiempo que tarda en alcanzar la posición final.
+*   - holdTime: tiempo que permanece en la posición final antes de regresar.
+*   - returnDuration: tiempo que tarda en volver a la posición inicial.
+*   - hitRadius: radio del área en la que inflige daño.
+*   - isActive: indica si la habilidad está activa.
+*   - owner: transform del objeto que lanzó la habilidad.
+*   - basePos: posición base desde donde se origina la habilidad.
+*   - damage: cantidad de daño que inflige.
+*   - ownerTag: etiqueta del dueño (Player/Enemy) para distinguir objetivos.
+*   - hasDealtDamage: controla si ya se aplicó el daño.
+*/
 public class UltiMoveBetween : MonoBehaviour
 {
-    [Header("Animación")]
-    [Tooltip("Si > 0 usa duración fija; si 0 usa velocidad constante.")]
-    public float duration = 1.0f;
-    [Tooltip("Usada solo si duration == 0 (unidades/seg).")]
-    public float speed = 3f;
-    [Tooltip("Tiempo que permanece activo tras llegar al punto final.")]
-    public float holdTime = 0.5f;
+    [Header("Motion")]
+    [SerializeField] private float startYOffset = 0f;
+    [SerializeField] private float endYOffset = 5f;
+    [SerializeField] private float travelDuration = 0.35f;
+    [SerializeField] private float holdTime = 0.25f;
+    [SerializeField] private float returnDuration = 0.35f;
+    [Header("Hit")]
+    [SerializeField] private float hitRadius = 3f;
+    private bool isActive;
+    private Transform owner;
+    private Vector3 basePos;
+    private float damage;
+    private string ownerTag;
+    private bool hasDealtDamage;
 
-    [Header("Offsets en Y (relativos a la base)")]
-    [Tooltip("Desfase inicial en Y (ej: -2 para nacer bajo el suelo).")]
-    public float startYOffset = -2f;
-    [Tooltip("Desfase final en Y (ej: 0 para llegar al nivel de base).")]
-    public float endYOffset = 0f;
-
-    [Header("Bloquear movimiento del dueño")]
-    public bool lockOwnerMovement = true;
-
-    // runtime
-    bool running;
-    Coroutine routine;
-    GameObject owner;
-    MonoBehaviour movementComp;
-    Rigidbody ownerRb;
-
-    /// <summary>
-    /// Activa la ulti en una posición base (ya calculada por ti delante del muzzle).
-    /// Este script solo modifica Y: baseY + startYOffset -> baseY + endYOffset.
-    /// </summary>
-    public void ActivateAtBasePosition(GameObject ultiOwner, Vector3 basePos)
+    /*Método: ActivateAtBasePosition
+    *Descripción: Activa la habilidad en una posición base, configurando daño,
+    * dueño y etiqueta del objetivo. Inicia la secuencia de movimiento y daño.
+    *Parámetros:
+    *   - ownerGO: objeto que lanza la habilidad.
+    *   - basePosition: posición base donde se activa.
+    *   - damage: daño a infligir.
+    *   - ownerTag: etiqueta del dueño (Player o Enemy).
+    */
+    public void ActivateAtBasePosition(GameObject ownerGO, Vector3 basePosition, float damage, string ownerTag)
     {
-        if (running) return;
+        if (isActive) return;
 
-        owner = ultiOwner;
-
-        Vector3 startPos = new Vector3(basePos.x, basePos.y + startYOffset, basePos.z);
-        Vector3 endPos = new Vector3(basePos.x, basePos.y + endYOffset, basePos.z);
-
+        this.owner = ownerGO ? ownerGO.transform : null;
+        this.basePos = basePosition;
+        this.damage = Mathf.Max(0f, damage);
+        this.ownerTag = ownerTag;
+        this.hasDealtDamage = false;
         gameObject.SetActive(true);
-
-        if (routine != null) StopCoroutine(routine);
-        routine = StartCoroutine(RunSequence(startPos, endPos));
+        StartCoroutine(RunSequence());
     }
 
-    IEnumerator RunSequence(Vector3 startPos, Vector3 endPos)
+    /*Método: RunSequence
+    *Descripción: Corrutina que controla el movimiento de la habilidad.
+    * Sube desde la posición inicial hasta la final, aplica daño en área,
+    * espera y regresa a la posición inicial.
+    */
+    private IEnumerator RunSequence()
     {
-        running = true;
-        transform.position = startPos;
-
-        // bloquear movimiento si aplica
-        System.Action unlock = null;
-        if (lockOwnerMovement && owner != null)
-            unlock = TryLockOwner(owner);
-
-        // mover (por duración o por velocidad)
-        if (duration > 0f)
+        isActive = true;
+        Vector3 start = basePos + Vector3.up * startYOffset;
+        Vector3 end = basePos + Vector3.up * endYOffset;
+        float t = 0f;
+        while (t < travelDuration)
         {
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.deltaTime / duration;
-                transform.position = Vector3.Lerp(startPos, endPos, Mathf.Clamp01(t));
-                yield return null;
-            }
+            t += Time.deltaTime;
+            float a = Mathf.Clamp01(t / travelDuration);
+            transform.position = Vector3.Lerp(start, end, a);
+            yield return null;
         }
-        else
+        if (!hasDealtDamage && damage > 0f)
         {
-            while ((transform.position - endPos).sqrMagnitude > 0.0001f)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, endPos, speed * Time.deltaTime);
-                yield return null;
-            }
+            DealOneShotDamageAt(transform.position);
+            hasDealtDamage = true;
         }
-
-        if (holdTime > 0f)
-            yield return new WaitForSeconds(holdTime);
-
-        unlock?.Invoke();
+        yield return new WaitForSeconds(holdTime);
+        t = 0f;
+        while (t < returnDuration)
+        {
+            t += Time.deltaTime;
+            float a = Mathf.Clamp01(t / returnDuration);
+            transform.position = Vector3.Lerp(end, start, a);
+            yield return null;
+        }
+        isActive = false;
         gameObject.SetActive(false);
-
-        running = false;
-        routine = null;
     }
 
-    // Bloqueo simple: deshabilita tu componente de movimiento y frena el RB
-    System.Action TryLockOwner(GameObject who)
+    /*Método: DealOneShotDamageAt
+    *Descripción: Aplica daño a todos los objetivos dentro del radio especificado,
+    * filtrando por capas y etiqueta contraria al dueño.
+    *Parámetros:
+    *   - center: posición central donde se aplica el daño en área.
+    */
+    private void DealOneShotDamageAt(Vector3 center)
     {
-        movementComp = who.GetComponent<PlayerMovement>();
-        if (movementComp != null) movementComp.enabled = false;
+        int targetLayer = LayerMask.NameToLayer(ownerTag == "Enemy" ? "Player" : "Enemy");
+        int layerMask = 1 << targetLayer;
 
-        ownerRb = who.GetComponent<Rigidbody>();
-        if (ownerRb != null)
+        Collider[] hits = Physics.OverlapSphere(center, hitRadius, layerMask, QueryTriggerInteraction.Collide);
+        if (hits == null || hits.Length == 0) return;
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            ownerRb.linearVelocity = Vector3.zero;   // Unity 6
-            ownerRb.angularVelocity = Vector3.zero;
+            var col = hits[i];
+            if (!col) continue;
+
+            var damageable = col.GetComponentInParent<IDamageable>();
+            if (damageable == null) continue;
+
+            var comp = damageable as Component;
+            if (!comp) continue;
+
+            var targetRoot = comp.gameObject;
+            if (!targetRoot) continue;
+
+            string targetTag = ownerTag == "Enemy" ? "Player" : "Enemy";
+            if (!targetRoot.CompareTag(targetTag)) continue;
+
+            damageable.ReceiveDamage(damage);
         }
-
-        // Si usas PlayerInput y quieres bloquear inputs, podrías deshabilitar su mapa aquí.
-
-        return () =>
-        {
-            if (movementComp != null) movementComp.enabled = true;
-            // Rehabilitar input si lo deshabilitaste.
-        };
     }
+
+#if UNITY_EDITOR
+    /*Método: OnDrawGizmosSelected
+    *Descripción: Dibuja en la vista de escena una esfera representando el área
+    * de impacto de la habilidad cuando el objeto está seleccionado.
+    */
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            transform.position == Vector3.zero
+                ? transform.position + Vector3.up * endYOffset
+                : transform.position,
+            hitRadius
+        );
+    }
+#endif
 }

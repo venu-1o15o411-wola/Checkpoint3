@@ -4883,7 +4883,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
       propertyPath: m_Name
-      value: ultiFire
+      value: 02.FireUlti
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4891,10 +4891,41 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9096531237936560987}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2052085517892360773}
   m_SourcePrefab: {fileID: 100100000, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
 --- !u!4 &8442926744383197037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
   m_PrefabInstance: {fileID: 8260151855890720902}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9106451656889554391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2b5bf4ffd4ccb6f45a2b4610bffb6806, type: 3}
+  m_PrefabInstance: {fileID: 8260151855890720902}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &2052085517892360773
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9106451656889554391}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.013
+  m_Height: 0.019999988
+  m_Direction: 1
+  m_Center: {x: -0.000000003259629, y: 0.0000000032596283, z: 0}

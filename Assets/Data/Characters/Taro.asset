@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c958ee41845b26641b47a56dfdfcd9cb, type: 3}
+  m_Name: Taro
+  m_EditorClassIdentifier: 
+  id: 1
+  displayName: Taro
+  description: "Sereno, paciente y sabio. Prefiere observar antes de actuar y siempre
+    ofrece consejos prudentes al equipo. Su calma inspira a los dem\xE1s, aunque
+    a veces puede parecer lento o indeciso."
+  sprite: {fileID: 21300000, guid: f5811a6e0edf87f42ae27202822a92ca, type: 3}
+  LifeBarSprite: {fileID: 21300000, guid: f6dfafb855d4f094f99e762e6810ae98, type: 3}
+  ManaBarSprite: {fileID: 21300000, guid: f6dfafb855d4f094f99e762e6810ae98, type: 3}
+  prefab: {fileID: 4609134192821788540, guid: bde67ad8fa21b334a8466d43532fc246, type: 3}
+  element: 1
+  lifeMax: 1200
+  manaMax: 500
+  manaRegenRate: 0.045
+  abilitySet: {fileID: 11400000, guid: 54a656d5bc9d4ab4b8d706174c662129, type: 2}

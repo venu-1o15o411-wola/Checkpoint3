@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: c8009aec8fbbfb6459df250bb01e846e, type: 3}
   projectilePrefab: {fileID: 0}
   description: Ulti de fuego
-  cooldown: 0
+  cooldown: 33
   resourceType: 0
   costValue: 140
   damage: 320

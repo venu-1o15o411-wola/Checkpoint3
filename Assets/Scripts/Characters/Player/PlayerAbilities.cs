@@ -1,7 +1,9 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-
+using System.Collections;
 /*Clase: PlayerAbilities
 *Descripción: Controla las habilidades del jugador y su interacción con los recursos de vida y maná.
 * Gestiona ataques, curación, habilidad definitiva (ulti), regeneración de maná y actualización de la UI.
@@ -13,9 +15,9 @@ using UnityEngine.InputSystem;
 *   - enableManaRegen: indica si el maná se regenera automáticamente.
 *   - anim: referencia al Animator del jugador.
 *   - rb: referencia al Rigidbody del jugador.
-*   - shooter: referencia al componente PlayerShooter para disparar proyectiles.
+*   - shooter: referencia al componente Shooter para disparar proyectiles.
 */
-public class PlayerAbilities : MonoBehaviour
+public class PlayerAbilities : MonoBehaviour, IDamageable
 {
     [Header("Character characterData")]
     public CharacterData characterData;
@@ -31,13 +33,21 @@ public class PlayerAbilities : MonoBehaviour
     private bool canUseHeal = true;
     private bool canUseUlti = true;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip selectedAttack;
+    [SerializeField] private AudioClip selectedHeal;
+    [SerializeField] private AudioClip selectedUlti;
+
+    [SerializeField] private AudioClip die;
+    [SerializeField] private AudioClip getHit;
+
     [Header("Regen")]
     [SerializeField]
     private bool enableManaRegen = true;
 
     private Animator anim;
     private Rigidbody rb;
-    private PlayerShooter shooter;
+    private Shooter shooter;
     [Header("Heal")]
     [SerializeField] private ParticleSystem healEffect;
     [Header("Ulti")]
@@ -52,11 +62,10 @@ public class PlayerAbilities : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
-        shooter = GetComponent<PlayerShooter>();
+        shooter = GetComponent<Shooter>();
 
         maxLife = characterData.lifeMax;
         maxMana = characterData.manaMax;
-        Debug.Log("Mana Max: " + characterData.manaMax);
         currentLife = maxLife;
         currentMana = maxMana;
         muzzle = shooter.muzzle;
@@ -95,6 +104,7 @@ public class PlayerAbilities : MonoBehaviour
             Debug.LogWarning("[PlayerAbilities] No alcanza recurso para ATTACK.");
             return;
         }
+        AudioManager.Instance.PlaySFX(selectedAttack);
         anim?.SetTrigger("Attack");
         canUseAttack = false;
         StartCooldown(1, ability.cooldown);
@@ -116,6 +126,7 @@ public class PlayerAbilities : MonoBehaviour
         if (!context.performed || !canUseHeal)
             return;
         var ability = characterData?.abilitySet?.heal;
+        AudioManager.Instance.PlaySFX(selectedHeal);
         anim?.SetTrigger("Heal");
         canUseHeal = false;
         StartCooldown(2, ability.cooldown);
@@ -136,7 +147,6 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (!context.performed || !canUseUlti)
             return;
-
         var ability = characterData?.abilitySet?.area;
         if (ability == null)
             return;
@@ -146,16 +156,14 @@ public class PlayerAbilities : MonoBehaviour
             Debug.LogWarning("[PlayerAbilities] No alcanza recurso para ULTI.");
             return;
         }
-
+        AudioManager.Instance.PlaySFX(selectedUlti);
         anim?.SetTrigger("Ulti");
         canUseUlti = false;
         StartCooldown(3, ability.cooldown);
         PlayerUIManager.Instance?.StartCoolDown(3, ability.cooldown);
-        Vector3 basePos = muzzle.position + muzzle.forward * distanciaN; // tú ya controlas distanciaN
-        ultiMoveBetween.ActivateAtBasePosition(gameObject, basePos);
-
+        Vector3 basePos = muzzle.position + muzzle.forward * distanciaN;
+        ultiMoveBetween.ActivateAtBasePosition(gameObject, basePos, ability.damage, gameObject.tag);
     }
-
     /*Método: SetLife
     *Descripción: Ajusta la vida actual dentro de los límites válidos y actualiza la UI.
     *Parámetros:
@@ -165,8 +173,8 @@ public class PlayerAbilities : MonoBehaviour
     {
         currentLife = Mathf.Clamp(value, 0f, maxLife);
         PlayerUIManager.Instance?.UpdateLife(currentLife, maxLife);
+        if (currentLife <= 0f) Die();
     }
-
     /*Método: SetMana
     *Descripción: Ajusta el maná actual dentro de los límites válidos y actualiza la UI.
     *Parámetros:
@@ -195,7 +203,6 @@ public class PlayerAbilities : MonoBehaviour
                     return false;
                 SetMana(currentMana - cost);
                 return true;
-
             case ResourceType.Health:
                 if (currentLife <= cost)
                     return false;
@@ -240,4 +247,39 @@ public class PlayerAbilities : MonoBehaviour
                 break;
         }
     }
+
+    /*Método: ReceiveDamage
+    *Descripción: Aplica daño al jugador, reproduce feedback de impacto si sigue con vida
+    * y, si la vida llega a 0, ejecuta la lógica de muerte.
+    *Parámetros:
+    *   - amount: cantidad de daño recibido.
+    */
+    public void ReceiveDamage(float amount)
+    {
+        if (amount <= 0f) return;
+        SetLife(currentLife - amount);
+        if (currentLife > 0f)
+        {
+            AudioManager.Instance.PlaySFX(getHit);
+
+            anim?.SetTrigger("GetHit");
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    /*Método: Die
+    *Descripción: Maneja la muerte del jugador: reproduce audio y animación,
+    * destruye el objeto y regresa al menú principal.
+    */
+    private void Die()
+    {
+        AudioManager.Instance.PlaySFX(die);
+        anim?.SetTrigger("Die");
+        Destroy(gameObject, 5f);
+        SceneManager.LoadScene("Menu");
+    }
+
 }

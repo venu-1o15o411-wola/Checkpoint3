@@ -22,6 +22,9 @@ public class CharacterSelectedManager : MonoBehaviour
     public Image attackImage;
     public Image healImage;
     public Image areaImage;
+    [Header("Audio")]
+
+    [SerializeField] private AudioClip musicClip;
 
     [Header("Bars")]
     public Image lifeBarImage;
@@ -33,6 +36,7 @@ public class CharacterSelectedManager : MonoBehaviour
     */
     void Start()
     {
+        AudioManager.Instance?.PlayMusic(musicClip);
         string selectedCharacterName = PlayerPrefs.GetString("SelectedCharacter");
 
         CharacterData selectedData = null;
@@ -61,7 +65,7 @@ public class CharacterSelectedManager : MonoBehaviour
             parent != null ? parent.transform : null
         );
         instance.name = "Player";
-        var shooter = instance.GetComponent<PlayerShooter>();
+        var shooter = instance.GetComponent<Shooter>();
         if (shooter != null)
         {
             var attack = selectedData.abilitySet?.attack;
@@ -82,10 +86,7 @@ public class CharacterSelectedManager : MonoBehaviour
             SetIcon(healImage, null);
             SetIcon(areaImage, null);
         }
-
         SetupBarsFromData(selectedData);
-
-        Debug.Log($"Spawned {selectedCharacterName}, ability icons & bars set.");
     }
 
     /*Método: SetupBarsFromData

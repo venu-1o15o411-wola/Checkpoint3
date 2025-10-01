@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 9065a909c31c395469611c2831da0ecf, type: 3}
   projectilePrefab: {fileID: 2884490308197557391, guid: 6dff574c377d8bc4cb71eb282a0adb4e, type: 3}
   description: Fires a concentrated jet of water at high speed.
-  cooldown: 3.5
+  cooldown: 0.7
   resourceType: 1
   costValue: 30
   damage: 90

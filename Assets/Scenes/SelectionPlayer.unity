@@ -502,13 +502,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e64539fe08722149a3166f26542d0f6, type: 2}
   - {fileID: 11400000, guid: 65af3846e21d0a94fa6ef57101f195ba, type: 2}
   - {fileID: 11400000, guid: 5ff865284fe751f4598d9e5834c453c1, type: 2}
-  - {fileID: 11400000, guid: 2b8635e65cae3794b954e37b80781a48, type: 2}
   characterImage: {fileID: 119664259}
   nameText: {fileID: 167908592}
   descriptionText: {fileID: 1150306470}
   leftButton: {fileID: 456877593}
   rightButton: {fileID: 877109938}
   selectButton: {fileID: 1133682831}
+  musicClip: {fileID: 8300000, guid: 471e5249f3e110a408ea9a3d27933d2d, type: 3}
+  clickBtn: {fileID: 8300000, guid: 671a31ead871b1a428ed9848f1072c00, type: 3}
+  hoverBtn: {fileID: 8300000, guid: beeec9b2fa9eeb44fb561d60e4f1fb39, type: 3}
 --- !u!114 &251798734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1538,7 +1540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 0.8439407, b: 0.25, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

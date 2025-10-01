@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 44f4bc87755b59b499513198fc678cdf, type: 3}
   projectilePrefab: {fileID: 0}
   description: Calls forth a giant tidal wave to overwhelm the battlefield
-  cooldown: 0
+  cooldown: 35
   resourceType: 1
   costValue: 120
   damage: 250

@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: FlameHeal
   icon: {fileID: 21300000, guid: eac5b1776fac61b4ab01ae83a551fd75, type: 3}
+  projectilePrefab: {fileID: 0}
   description: 'Fuego curativo
 
 '
   cooldown: 7
   resourceType: 1
-  costValue: 50
+  costValue: 80
   damage: 180
   attack: 0
   isHeal: 1

@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: e5afc4a0f25555d4a8524dbf9d4e05d3, type: 3}
   projectilePrefab: {fileID: 0}
   description: Shakes the ground violently, causing massive destruction.
-  cooldown: 0
+  cooldown: 30
   resourceType: 0
   costValue: 160
   damage: 350

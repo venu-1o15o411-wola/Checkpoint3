@@ -30,7 +30,10 @@ public class CharacterSelector : MonoBehaviour
     public Button leftButton;
     public Button rightButton;
     public Button selectButton;
-
+    [Header("Audio")]
+    [SerializeField] private AudioClip musicClip;
+    [SerializeField] private AudioClip clickBtn;
+    [SerializeField] private AudioClip hoverBtn;
     private int index = 0;
 
     /*Método: Start
@@ -45,8 +48,9 @@ public class CharacterSelector : MonoBehaviour
             rightButton.onClick.AddListener(Next);
         if (selectButton != null)
             selectButton.onClick.AddListener(Select);
-
         UpdateUI();
+        AudioManager.Instance?.PlayMusic(musicClip);
+
     }
 
     /*Método: Previous
@@ -55,6 +59,8 @@ public class CharacterSelector : MonoBehaviour
     public void Previous()
     {
         index = (index - 1 + characters.Length) % characters.Length;
+        AudioManager.Instance.PlaySFX(hoverBtn);
+
         UpdateUI();
     }
 
@@ -64,6 +70,8 @@ public class CharacterSelector : MonoBehaviour
     public void Next()
     {
         index = (index + 1) % characters.Length;
+        AudioManager.Instance.PlaySFX(hoverBtn);
+
         UpdateUI();
     }
 
@@ -74,8 +82,7 @@ public class CharacterSelector : MonoBehaviour
     {
         PlayerPrefs.SetString("SelectedCharacter", characters[index].name);
         PlayerPrefs.Save();
-
-        Debug.Log($"Character selected: {characters[index]} ");
+        AudioManager.Instance.PlaySFX(clickBtn);
         SceneManager.LoadScene("Sanbox");
     }
 

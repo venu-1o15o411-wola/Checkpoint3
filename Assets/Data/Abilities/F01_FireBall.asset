@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Fire Ball
   icon: {fileID: 21300000, guid: 14462b284da6692428e82013e37a9a23, type: 3}
-  projectilePrefab: {fileID: 6042712275903567803, guid: fcb4c5eaaabdcbb43952f64770ad661e, type: 3}
+  projectilePrefab: {fileID: 0}
   description: Disparo de fuego
-  cooldown: 4
+  cooldown: 0.5
   resourceType: 0
   costValue: 40
   damage: 120

@@ -50,10 +50,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 954fcf021f077874f8dc321ac6fd6776, type: 3}
       propertyPath: m_Name
-      value: ultiWater
+      value: 02.WaterUlti
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 954fcf021f077874f8dc321ac6fd6776, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3308794129131212331}
   m_SourcePrefab: {fileID: 100100000, guid: 954fcf021f077874f8dc321ac6fd6776, type: 3}
+--- !u!1 &1258100863155517796 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 954fcf021f077874f8dc321ac6fd6776, type: 3}
+  m_PrefabInstance: {fileID: 2140553152874808373}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &3308794129131212331
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258100863155517796}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.013
+  m_Height: 0.019999998
+  m_Direction: 1
+  m_Center: {x: -0.000000003259629, y: 0.00000000325963, z: 0.004968894}

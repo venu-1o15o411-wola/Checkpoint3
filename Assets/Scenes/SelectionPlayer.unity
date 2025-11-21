@@ -511,6 +511,13 @@ MonoBehaviour:
   musicClip: {fileID: 8300000, guid: 471e5249f3e110a408ea9a3d27933d2d, type: 3}
   clickBtn: {fileID: 8300000, guid: 671a31ead871b1a428ed9848f1072c00, type: 3}
   hoverBtn: {fileID: 8300000, guid: beeec9b2fa9eeb44fb561d60e4f1fb39, type: 3}
+  selectionVO:
+  - {fileID: 8300000, guid: a282fb5f94e9ec144b9df9941811d9a5, type: 3}
+  - {fileID: 8300000, guid: bd36c3c0f36677b48b21c187f4f90796, type: 3}
+  - {fileID: 8300000, guid: 1d9fa747dd5faa3498780ae36c7243c7, type: 3}
+  - {fileID: 8300000, guid: 8f0321e6b67d8274b862d4d830720607, type: 3}
+  - {fileID: 8300000, guid: 1a408478436564240b31229af4da52aa, type: 3}
+  - {fileID: 8300000, guid: aa7600d618d0caa429c64a80bfa702da, type: 3}
 --- !u!114 &251798734
 MonoBehaviour:
   m_ObjectHideFlags: 0

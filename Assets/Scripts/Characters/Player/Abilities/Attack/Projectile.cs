@@ -72,6 +72,9 @@ public class Projectile : MonoBehaviour
     )
     {
         transform.position = startPosition;
+        var euler = transform.eulerAngles;
+        euler.x = 90f;
+        transform.eulerAngles = euler;
         transform.forward = direction.sqrMagnitude > 0.0001f ? direction.normalized : transform.forward;
 
         this.speed = projectileSpeed;

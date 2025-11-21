@@ -34,6 +34,8 @@ public class CharacterSelector : MonoBehaviour
     [SerializeField] private AudioClip musicClip;
     [SerializeField] private AudioClip clickBtn;
     [SerializeField] private AudioClip hoverBtn;
+    [Header("voces 2 por personaje")]
+    [SerializeField] private AudioClip[] selectionVO;
     private int index = 0;
 
     /*Método: Start
@@ -50,6 +52,9 @@ public class CharacterSelector : MonoBehaviour
             selectButton.onClick.AddListener(Select);
         UpdateUI();
         AudioManager.Instance?.PlayMusic(musicClip);
+        AudioManager.Instance?.SetMusicVolume(0.03f);
+        AudioManager.Instance?.SetSfxVolume(2f);
+        PlayRandomVOFor(index);
 
     }
 
@@ -62,6 +67,7 @@ public class CharacterSelector : MonoBehaviour
         AudioManager.Instance.PlaySFX(hoverBtn);
 
         UpdateUI();
+        PlayRandomVOFor(index);
     }
 
     /*Método: Next
@@ -73,6 +79,7 @@ public class CharacterSelector : MonoBehaviour
         AudioManager.Instance.PlaySFX(hoverBtn);
 
         UpdateUI();
+        PlayRandomVOFor(index);
     }
 
     /*Método: Select
@@ -99,5 +106,24 @@ public class CharacterSelector : MonoBehaviour
             nameText.text = c.displayName;
         if (descriptionText)
             descriptionText.text = c.description;
+    }
+    private void PlayRandomVOFor(int characterIndex)
+    {
+        if (selectionVO == null) return;
+
+        int baseIdx = characterIndex * 2;
+        int a = baseIdx;
+        int b = baseIdx + 1;
+
+        // Validaciones defensivas por si faltan clips en el array
+        if (a < 0 || b >= selectionVO.Length) return;
+        if (selectionVO[a] == null && selectionVO[b] == null) return;
+
+        // Elegir entre a y b
+        int pick = Random.Range(0, 2) == 0 ? a : b;
+        var clip = selectionVO[pick] ?? selectionVO[pick == a ? b : a]; // fallback si uno es null
+
+        if (clip != null)
+            AudioManager.Instance?.PlaySFX(clip);
     }
 }
